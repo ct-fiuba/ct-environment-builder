@@ -1,6 +1,7 @@
 require('dotenv').config();
+const visitManagerUtils = require('./src/visitManagerUtils');
 
-const parse_args = () => {
+function parse_args() {
   args = {};
   process.argv.forEach(function (val, index, array) {
     if (index >= 2) {
@@ -12,7 +13,7 @@ const parse_args = () => {
   return args;
 }
 
-const validate_args = (args) => {
+function validate_args(args) {
   if (!args.hasOwnProperty('users') || !args.hasOwnProperty('establishments')) {
     console.log("Error: I didn't receive the arguments needed: users and establishments");
     return false;
@@ -26,14 +27,27 @@ const validate_args = (args) => {
   return true;
 }
 
+async function ping_servers() {
+  try {
+    const response = await visitManagerUtils.ping();
+    return response.status === 200;
+  } catch (error) {
+    console.error("Error while pinging server: ", error.code);
+    return false;
+  }
+}
+
 const main = () => {
   console.log('Here we are!');
   args = parse_args();
   if (!validate_args(args)) {
     return 1;
   }
-  console.log('Success!');
-  console.log(args);
+  console.log('Args detected correctly!');
+  if (!ping_servers()) {
+    return 1;
+  }
+  console.log('Servers up and running!');
 };
 
 if (require.main === module) {
