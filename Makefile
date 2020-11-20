@@ -4,19 +4,7 @@ install:
 
 .PHONY: run
 run: install
-	npm start;
-
-.PHONY: run-development
-run-development: install
-	npm run start-development;
-
-.PHONY: test
-test:
-	npm run test:integration
-
-.PHONY: ping
-ping:
-	curl -vvv "localhost:5000/ping"
+	npm start -- users=$(users) establishments=$(establishments);
 
 .PHONY: help
 help:
