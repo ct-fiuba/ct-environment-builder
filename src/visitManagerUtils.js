@@ -24,6 +24,8 @@ function generateEstablishments(number_establishments) {
   m2Generator = random.normal(mu=MEDIAN_M2, sigma=STANDARD_DEVIATION_M2);
   estimatedVisitDurationGenerator = random.normal(mu=MEDIAN_VISIT_DURATION, sigma=STANDARD_DEVIATION_VISIT_DURATION);
   for (let i = 0; i < number_establishments; i++) {
+    _m2 = m2Generator();
+    _estimatedVisitDuration = estimatedVisitDurationGenerator();
     establishments.push({
       type: 'restaurant',
       name: `establishment_${i}`,
@@ -37,8 +39,8 @@ function generateEstablishments(number_establishments) {
         {
           name: "Primer piso",
           hasExit: random.float() <= PROB_HAS_EXIT,
-          m2: String(Math.floor(m2Generator())),
-          estimatedVisitDuration: String(Math.floor(estimatedVisitDurationGenerator())),
+          m2: String(_m2 >= 1 ? Math.floor(_m2) : 1),
+          estimatedVisitDuration: String(String(_estimatedVisitDuration >= 1 ? Math.floor(_estimatedVisitDuration) : 1)),
           openPlace: random.float() <= PROB_OPEN_PLACE
         },
       ],
