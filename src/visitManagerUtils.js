@@ -1,6 +1,13 @@
 const axios = require('axios');
+const random = require('random')
 
 const BASE_URL = process.env.VISIT_MANAGER_URL;
+const PROB_HAS_EXIT = 0.5;
+const PROB_OPEN_PLACE = 0.2;
+const MEDIAN_M2 = 20;
+const STANDARD_DEVIATION_M2 = 3;
+const MEDIAN_VISIT_DURATION = 15;
+const STANDARD_DEVIATION_VISIT_DURATION = 2;
 
 function getVisitManagerPing() {
   return axios.get(`${BASE_URL}/`);
@@ -14,6 +21,8 @@ function postEstablishments(number_establishments) {
 
 function generateEstablishments(number_establishments) {
   establishments = [];
+  m2Generator = random.normal(mu=MEDIAN_M2, sigma=STANDARD_DEVIATION_M2);
+  estimatedVisitDurationGenerator = random.normal(mu=MEDIAN_VISIT_DURATION, sigma=STANDARD_DEVIATION_VISIT_DURATION);
   for (let i = 0; i < number_establishments; i++) {
     establishments.push({
       type: 'restaurant',
@@ -27,10 +36,10 @@ function generateEstablishments(number_establishments) {
       spaces: [
         {
           name: "Primer piso",
-          hasExit: false,
-          m2: "100",
-          estimatedVisitDuration: "10",
-          openPlace: false
+          hasExit: random.float() <= PROB_HAS_EXIT,
+          m2: String(Math.floor(m2Generator())),
+          estimatedVisitDuration: String(Math.floor(estimatedVisitDurationGenerator())),
+          openPlace: random.float() <= PROB_OPEN_PLACE
         },
       ],
     });

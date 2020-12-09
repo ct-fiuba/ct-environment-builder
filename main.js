@@ -2,7 +2,7 @@ require('dotenv').config();
 const visitManagerUtils = require('./src/visitManagerUtils');
 const authUtils = require('./src/authUtils');
 
-function parse_args() {
+function parseArgs() {
   args = {};
   process.argv.forEach(function (val, index, array) {
     if (index >= 2) {
@@ -14,7 +14,7 @@ function parse_args() {
   return args;
 }
 
-function validate_args(args) {
+function validateArgs(args) {
   if (!args.hasOwnProperty('users') || !args.hasOwnProperty('establishments')) {
     console.log("Error: I didn't receive the arguments needed: users and establishments");
     return false;
@@ -76,9 +76,9 @@ async function createUsers(number_users) {
 }
 
 async function main() {
-  console.log('Here we are!');
-  args = parse_args();
-  if (!validate_args(args)) {
+  console.log('Starting Environment Builder!');
+  args = parseArgs();
+  if (!validateArgs(args)) {
     return 1;
   }
   console.log('Args detected correctly!');
