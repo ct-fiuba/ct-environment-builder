@@ -1,0 +1,25 @@
+{
+  "name": "ct-environment-builder",
+  "version": "1.0.0",
+  "description": "Scripts that help you build an already populated environment",
+  "main": "index.js",
+  "scripts": {
+    "start": "node main.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ct-fiuba/ct-environment-builder.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ct-fiuba/ct-environment-builder/issues"
+  },
+  "homepage": "https://github.com/ct-fiuba/ct-environment-builder#readme",
+  "dependencies": {
+    "axios": "^0.21.0",
+    "dotenv": "^8.2.0",
+    "random": "^2.2.0"
+  }
+}
