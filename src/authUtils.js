@@ -24,4 +24,16 @@ function generateUsers(number_users) {
   return users;
 }
 
-module.exports = { ping: getAuthServerPing, createUsers: postUsers};
+function createVisitsByUserObjects(number_users) {
+  visits_by_user = {};
+  for (let i = 0; i < number_users; i++) {
+    visits_by_user[`user_${i}@gmail.com`] = [];
+  }
+  return visits_by_user;
+}
+
+module.exports = {
+  ping: getAuthServerPing,
+  createUsers: postUsers,
+  createVisitsByUserObjects
+};
