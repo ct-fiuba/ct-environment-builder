@@ -37,6 +37,7 @@ async function createEstablishments(number_establishments) {
 
 async function createUsers(number_users) {
   const promises = authUtils.createUsers(number_users);
+  visits_by_user = authUtils.createVisitsByUserObjects(args['users']);
   return Promise.all(promises)
     .then(function (results) {
       failing_results = results.filter(result => result.status !== 201);
@@ -92,7 +93,6 @@ async function main() {
     return 4;
   }
   console.log('Users created correctly!');
-  visits_by_user = authUtils.createVisitsByUserObjects(args['users']);
   visits_result = await createVisits(visits, visits_by_space, visits_by_user, args['mobility'], args['days']);
   if (!visits_result) {
     return 5;
