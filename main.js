@@ -1,38 +1,17 @@
 require('dotenv').config();
 const visitManagerUtils = require('./src/visitManagerUtils');
 const authUtils = require('./src/authUtils');
+const validationsUtils = require('./src/validationsUtils');
 
-function parseArgs() {
-  args = {};
-  process.argv.forEach(function (val, index, array) {
-    if (index >= 2) {
-      key = val.split('=')[0]
-      value = val.split('=')[1]
-      args[key] = value;
-    }
-  });
-  return args;
-}
-
-function validateArgs(args) {
-  if (!args.hasOwnProperty('users') || !args.hasOwnProperty('establishments')) {
-    console.log("Error: I didn't receive the arguments needed: users and establishments");
-    return false;
-  }
-  args['users'] = parseInt(args['users']);
-  args['establishments'] = parseInt(args['establishments']);
-  if (isNaN(args['users']) || isNaN(args['establishments'])) {
-    console.log("Error: I didn't receive numeric values for the arguments needed: users and establishments");
-    return false;
-  }
-  return true;
-}
+visits = [];
+visits_by_space = {};
+visits_by_user = {};
 
 async function pingServers() {
   try {
     const response_visit_manager = await visitManagerUtils.ping();
     const response_auth_server = await authUtils.ping();
-    return response_visit_manager.status === 200 && response_auth_server.status === 200 ;
+    return response_visit_manager.status === 200 && response_auth_server.status === 200;
   } catch (error) {
     console.error("Error while pinging servers: ", error.code);
     return false;
@@ -47,9 +26,10 @@ async function createEstablishments(number_establishments) {
       if (failing_results.length > 0) {
         console.log(`Error while creating establishments, ${failing_results.length} failed`);
       }
+      results.map(result => visits_by_space[result.data.spaces[0]] = []);
       return true;
     })
-    .catch((error)=>{
+    .catch((error) => {
       console.log("Error while creating establishments: ", error.code);
       return false;
     });
@@ -57,6 +37,7 @@ async function createEstablishments(number_establishments) {
 
 async function createUsers(number_users) {
   const promises = authUtils.createUsers(number_users);
+  visits_by_user = authUtils.createVisitsByUserObjects(args['users']);
   return Promise.all(promises)
     .then(function (results) {
       failing_results = results.filter(result => result.status !== 201);
@@ -65,9 +46,8 @@ async function createUsers(number_users) {
       }
       return true;
     })
-    .catch((error)=>{
+    .catch((error) => {
       if (error.response.data.reason === 'EMAIL_EXISTS') {
-        console.log(`${JSON.parse(error.config.data)['email']} already created`);
         return true;
       }
       console.log("Error while creating users: ", error.response.data.reason);
@@ -75,10 +55,26 @@ async function createUsers(number_users) {
     });
 }
 
+async function createVisits(visits, visits_by_space, visits_by_user, mobility, days) {
+  const promises = visitManagerUtils.createVisits(visits, visits_by_space, visits_by_user, mobility, days);
+  return Promise.all(promises)
+    .then(function (results) {
+      failing_results = results.filter(result => result.status !== 201);
+      if (failing_results.length > 0) {
+        console.log(`Error while creating visits, ${failing_results.length} failed`);
+      }
+      return true;
+    })
+    .catch((error) => {
+      console.log("Error while creating visits: ", error.response.data.reason);
+      return false;
+    });
+}
+
 async function main() {
   console.log('Starting Environment Builder!');
-  args = parseArgs();
-  if (!validateArgs(args)) {
+  args = validationsUtils.parseArgs();
+  if (!validationsUtils.validateArgs(args)) {
     return 1;
   }
   console.log('Args detected correctly!');
@@ -96,22 +92,29 @@ async function main() {
   if (!users_result) {
     return 4;
   }
-  console.log(users_result);
   console.log('Users created correctly!');
+  visits_result = await createVisits(visits, visits_by_space, visits_by_user, args['mobility'], args['days']);
+  if (!visits_result) {
+    return 5;
+  }
+  console.log('Visits created correctly!');
+  console.log("All the visits: ", visits);
+  console.log("Visits by user: ", visits_by_user);
+  console.log("Visits by space: ", visits_by_space);
   return 0;
 };
 
 if (require.main === module) {
   (async () => {
     try {
-        var return_code = await main();
-        if (return_code === 0) {
-          console.log("The environment was built correctly!");
-        } else {
-          console.log("ERROR: return code: ", return_code);
-        }
+      var return_code = await main();
+      if (return_code === 0) {
+        console.log("The environment was built correctly!");
+      } else {
+        console.log("ERROR: return code: ", return_code);
+      }
     } catch (e) {
-        console.log(e);
+      console.log(e);
     }
   })();
 }
