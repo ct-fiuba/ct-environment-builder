@@ -19,7 +19,7 @@ async function pingServers() {
 }
 
 async function createEstablishments(number_establishments) {
-  const promises = visitManagerUtils.createEstablishments(number_establishments);
+  const promises = visitManagerUtils.createEstablishments(number_establishments, n95Mandatory);
   return Promise.all(promises)
     .then(function (results) {
       failing_results = results.filter(result => result.status !== 201);
@@ -83,7 +83,7 @@ async function main() {
     return 2;
   }
   console.log('Servers up and running!');
-  establishments_result = await createEstablishments(args['establishments']);
+  establishments_result = await createEstablishments(args['establishments'], args['n95Mandatory']);
   if (!establishments_result) {
     return 3;
   }
