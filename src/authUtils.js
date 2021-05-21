@@ -8,7 +8,7 @@ function getAuthServerPing() {
 
 function postUsers(number_users) {
   users = generateUsers(number_users);
-  promises = users.map(user => axios.post(`${BASE_URL}/signUp`, user));
+  promises = users.map(user => axios.post(`${BASE_URL}/users/signUp`, user));
   return promises;
 }
 
