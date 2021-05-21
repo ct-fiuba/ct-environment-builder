@@ -31,6 +31,7 @@ function validateArgs(args) {
     args['establishments'] = parseInt(args['establishments']);
     args['mobility'] = parseInt(args['mobility']);
     args['days'] = parseInt(args['days']);
+    args['n95Mandatory'] = (args['n95Mandatory'] === 'true')
     if (isNaN(args['users'])) {
         console.log("Error: I didn't receive numeric values for the arguments needed: users");
         return false;

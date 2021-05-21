@@ -20,7 +20,7 @@ function postEstablishments(number_establishments) {
   return promises;
 }
 
-function generateEstablishments(number_establishments) {
+function generateEstablishments(number_establishments, n95Mandatory) {
   establishments = [];
   m2Generator = random.normal(mu = MEDIAN_M2, sigma = STANDARD_DEVIATION_M2);
   estimatedVisitDurationGenerator = random.normal(mu = MEDIAN_VISIT_DURATION, sigma = STANDARD_DEVIATION_VISIT_DURATION);
@@ -42,7 +42,8 @@ function generateEstablishments(number_establishments) {
           hasExit: random.float() <= PROB_HAS_EXIT,
           m2: String(_m2 >= 1 ? Math.floor(_m2) : 1),
           estimatedVisitDuration: String(String(_estimatedVisitDuration >= 1 ? Math.floor(_estimatedVisitDuration) : 1)),
-          openPlace: random.float() <= PROB_OPEN_PLACE
+          openPlace: random.float() <= PROB_OPEN_PLACE,
+          n95Mandatory: n95Mandatory
         },
       ],
     });
@@ -82,7 +83,9 @@ function generateVisits(visits, visits_by_space, visits_by_user, mobility, days)
         current_visit = {
           scanCode: space_id,
           userGeneratedCode: generateRandomString(),
-          timestamp: generateRandomDate(d)
+          timestamp: generateRandomDate(d),
+          vaccinated: false,
+          covidRecovered: false
         };
         visits.push(current_visit);
         visits_by_user[current_user_email].push(current_visit);

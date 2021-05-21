@@ -4,7 +4,7 @@ install:
 
 .PHONY: run
 run: install
-	npm start -- users=$(users) establishments=$(establishments) mobility=$(mobility) days=$(days);
+	npm start -- users=$(users) establishments=$(establishments) mobility=$(mobility) days=$(days) n95Mandatory=$(n95Mandatory);
 
 .PHONY: help
 help:
