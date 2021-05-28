@@ -30,7 +30,6 @@ function generateEstablishments(number_establishments, n95Mandatory) {
     establishments.push({
       type: 'restaurant',
       name: `establishment_${i}`,
-      email: `establishment_${i}@gmail.com`,
       address: `Address_${i}`,
       city: 'CABA',
       state: 'CABA',
