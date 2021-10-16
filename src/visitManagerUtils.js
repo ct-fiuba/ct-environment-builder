@@ -84,7 +84,7 @@ function generateVisits(visits, visits_by_space, visits_by_user, mobility, days)
           userGeneratedCode: generateRandomString(),
           timestamp: generateRandomDate(d),
           vaccinated: false,
-          covidRecovered: false
+          illnessRecovered: false
         };
         visits.push(current_visit);
         visits_by_user[current_user_email].push(current_visit);
