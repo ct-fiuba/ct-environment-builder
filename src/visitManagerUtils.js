@@ -41,7 +41,7 @@ function generateEstablishments(number_establishments, n95Mandatory) {
           hasExit: random.float() <= PROB_HAS_EXIT,
           m2: String(_m2 >= 1 ? Math.floor(_m2) : 1),
           estimatedVisitDuration: String(String(_estimatedVisitDuration >= 1 ? Math.floor(_estimatedVisitDuration) : 1)),
-          openPlace: random.float() <= PROB_OPEN_PLACE,
+          openSpace: random.float() <= PROB_OPEN_PLACE,
           n95Mandatory: n95Mandatory
         },
       ],
