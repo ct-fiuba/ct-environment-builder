@@ -3,7 +3,7 @@ const random = require('random')
 
 const BASE_URL = process.env.VISIT_MANAGER_URL;
 const PROB_HAS_EXIT = 0.5;
-const PROB_OPEN_PLACE = 0.2;
+const PROB_OPEN_SPACE = 0.2;
 const MEDIAN_M2 = 20;
 const STANDARD_DEVIATION_M2 = 3;
 const STANDARD_DEVIATION_MOBILITY = 1;
@@ -41,7 +41,7 @@ function generateEstablishments(number_establishments, n95Mandatory) {
           hasExit: random.float() <= PROB_HAS_EXIT,
           m2: String(_m2 >= 1 ? Math.floor(_m2) : 1),
           estimatedVisitDuration: String(String(_estimatedVisitDuration >= 1 ? Math.floor(_estimatedVisitDuration) : 1)),
-          openPlace: random.float() <= PROB_OPEN_PLACE,
+          openSpace: random.float() <= PROB_OPEN_SPACE,
           n95Mandatory: n95Mandatory
         },
       ],
@@ -80,11 +80,11 @@ function generateVisits(visits, visits_by_space, visits_by_user, mobility, days)
         spaces_ids = Object.keys(visits_by_space);
         space_id = spaces_ids[random.int(0, spaces_ids.length - 1)];
         current_visit = {
-          scanCode: space_id,
+          spaceId: space_id,
           userGeneratedCode: generateRandomString(),
           timestamp: generateRandomDate(d),
           vaccinated: false,
-          covidRecovered: false
+          illnessRecovered: false
         };
         visits.push(current_visit);
         visits_by_user[current_user_email].push(current_visit);
