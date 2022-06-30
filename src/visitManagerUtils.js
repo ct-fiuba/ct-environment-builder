@@ -75,7 +75,7 @@ function generateVisits(visits, visits_by_space, visits_by_user, mobility, days)
     for (let i = 0; i < users_emails.length; i++) {
       current_user_email = users_emails[i]
       mobility_current_day = mobilityGenerator();
-      mobility_current_day = mobility_current_day >= 0 ? Math.floor(mobility_current_day) : 0;
+      mobility_current_day = mobility_current_day >= 0 ? Math.ceil(mobility_current_day) : 0;
       for (let j = 0; j < mobility_current_day; j++) {
         spaces_ids = Object.keys(visits_by_space);
         space_id = spaces_ids[random.int(0, spaces_ids.length - 1)];
