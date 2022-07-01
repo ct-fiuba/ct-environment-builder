@@ -7,7 +7,7 @@ function getVirusTrackerPing() {
   return axios.get(`${BASE_URL}/`);
 }
 
-function declareInfected(visits_by_user, nInfected) {
+function declareInfected(visits_by_user, nInfected, infected_codes) {
   requests = [];
   users_emails = Object.keys(visits_by_user);
   for (let i = 0; i < nInfected; i++) {
@@ -18,6 +18,7 @@ function declareInfected(visits_by_user, nInfected) {
         spaceId: visit.spaceId,
         userGeneratedCode: visit.userGeneratedCode
       };
+      infected_codes.push(infection);
       return axios.post(`${BASE_URL}/infected`, infection);
     }));
   }

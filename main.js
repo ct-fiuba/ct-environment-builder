@@ -11,7 +11,7 @@ async function pingServers() {
     // const response_auth_server = await authUtils.ping();
     return response_visit_manager.status === 200 && response_virus_tracker.status === 200;
   } catch (error) {
-    console.error("Error while pinging servers: ", error.code);
+    console.error("Error while pinging servers: ", error);
     return false;
   }
 }
@@ -33,8 +33,10 @@ async function createEstablishments(number_establishments, n95Mandatory, visits_
     });
 }
 
-async function createUsers(number_users) {
-  visits_by_user = authUtils.createVisitsByUserObjects(number_users);
+async function createUsers(number_users, visits_by_user) {
+  for (let i = 0; i < number_users; i++) {
+    visits_by_user[`user_${i}@gmail.com`] = [];
+  }
   return true;
 }
 
@@ -49,13 +51,13 @@ async function createVisits(visits, visits_by_space, visits_by_user, mobility, d
       return true;
     })
     .catch((error) => {
-      console.log("Error while creating visits: ", error.response.data.reason);
+      console.log("Error while creating visits: ", error.response?.data.reason);
       return false;
     });
 }
 
-async function declareInfected(visits_by_user, nInfected) {
-  const promises = virusTrackerUtils.declareInfected(visits_by_user, mobility, days);
+async function declareInfected(visits_by_user, nInfected, infected_codes) {
+  const promises = virusTrackerUtils.declareInfected(visits_by_user, nInfected, infected_codes);
   return Promise.all(promises)
     .then(function (results) {
       failing_results = results.filter(result => result.status !== 201);
@@ -94,13 +96,14 @@ async function main() {
   let visits = [];
   let visits_by_space = {};
   let visits_by_user = {};
+  let infected_codes = {};
   establishments_result = await createEstablishments(nEstablishments, n95Mandatory, visits_by_space);
   if (!establishments_result) {
     return 3;
   }
   console.log('Establishments created correctly!');
 
-  users_result = await createUsers(nUsers);
+  users_result = await createUsers(nUsers, visits_by_user);
   if (!users_result) {
     return 4;
   }
@@ -111,16 +114,16 @@ async function main() {
     return 5;
   }
   console.log('Visits created correctly!');
+  console.log("All the visits: ", visits);
+  console.log("Visits by space: ", visits_by_space);
+  console.log("Visits by user: ", visits_by_user);
 
-  infected_result = await declareInfected(visits_by_user, nInfected);
+  infected_result = await declareInfected(visits_by_user, nInfected, infected_codes);
   if (!infected_result) {
     return 6;
   }
   console.log('Infected declared correctly!');
-
-  console.log("All the visits: ", visits);
-  console.log("Visits by user: ", visits_by_user);
-  console.log("Visits by space: ", visits_by_space);
+  console.log("Declared infected: ", infected_codes);
   return 0;
 };
 

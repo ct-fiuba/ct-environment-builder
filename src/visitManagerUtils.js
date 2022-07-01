@@ -82,8 +82,8 @@ function generateVisits(visits, visits_by_space, visits_by_user, mobility, days)
         current_visit = {
           spaceId: space_id,
           userGeneratedCode: generateRandomString(),
-          timestamp: generateRandomDate(d),
-          vaccinated: false,
+          entranceTimestamp: generateRandomDate(d),
+          vaccinated: 0,
           illnessRecovered: false
         };
         visits.push(current_visit);
